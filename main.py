@@ -62,3 +62,40 @@ async def clear(ctx, amount: int = 5):
 
 # Spuštění bota pomocí tokenu z Discloudu
 bot.run(os.getenv("TOKEN"))
+import discord
+from discord.ext import commands
+
+intents = discord.Intents.default()
+intents.members = True
+intents.message_content = True
+
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+class VerificationView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(label="Ověřit se / Verify", style=discord.ButtonStyle.green, custom_id="verify_button")
+    async def verify_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        # Tady si můžeš doplnit název role, kterou uživatel dostane (např. "Hráč" nebo "Member")
+        role = discord.utils.get(interaction.guild.roles, name="Verifed")
+        if role:
+            await interaction.user.add_roles(role)
+            await interaction.response.send_message("Úspěšně jsi se ověřil/a!", ephemeral=True)
+        else:
+            await interaction.response.send_message("Role 'Hráč' neexistuje na tomto serveru.", ephemeral=True)
+
+@bot.event
+async def on_ready():
+    bot.add_view(VerificationView())
+    print(f"Bot {bot.user} je připraven!")
+
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def verify(ctx):
+    view = VerificationView()
+    await ctx.send("Kliknutím na tlačítko níže potvrdíš, že nejsi bot:", view=view)
+
+# Sem doplň svůj token nebo nechej načítání z Railway variables
+import os
+bot.run(os.getenv("TOKEN"))
