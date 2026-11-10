@@ -56,9 +56,9 @@ async def clear(ctx, amount: int = 5):
     embed = discord.Embed(
         title="Promázáno",
         description=f"Úspěšně smazáno {amount} zpráv.",
-        color=EMBED_COLOR
+        color=0x9b59b6 # případně tvoje barva
     )
-    await ctx.send(embed=embed, delete_after=3)
+    await ctx.send(embed=embed, delete_after=5)
 
 # Spuštění bota pomocí tokenu z Discloudu
 bot.run(os.getenv("TOKEN"))
