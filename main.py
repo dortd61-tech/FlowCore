@@ -77,14 +77,17 @@ class VerificationView(discord.ui.View):
 
     @discord.ui.button(label="Ověřit se / Verify", style=discord.ButtonStyle.green, custom_id="verify_button")
     async def verify_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        # Tady si můžeš doplnit název role, kterou uživatel dostane (např. "Hráč" nebo "Member")
-        role = discord.utils.get(interaction.guild.roles, name="Verifed")
+        role = discord.utils.get(interaction.guild.roles, name="Verified")
         if role:
             await interaction.user.add_roles(role)
             await interaction.response.send_message("Úspěšně jsi se ověřil/a!", ephemeral=True)
         else:
-            await interaction.response.send_message("Role 'Hráč' neexistuje na tomto serveru.", ephemeral=True)
+            await interaction.response.send_message("Role 'Verified' neexistuje na tomto serveru.", ephemeral=True)
 
+@bot.command()
+async def verify(ctx):
+    view = VerificationView()
+    await ctx.send("Kliknutím na tlačítko níže potvrdíš, že nejsi bot:", view=view)
 @bot.event
 async def on_ready():
     bot.add_view(VerificationView())
